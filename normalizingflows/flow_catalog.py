@@ -217,7 +217,7 @@ class RealNVP(tfb.Bijector):
         
     def _bijector_fn(self, x):
         log_s, t = self.nn(x)
-        return tfb.affine_scalar.AffineScalar(shift=t, log_scale=log_s)
+        return tfb.Shift(t)(tfb.Scale(log_scale=log_s))
 
     def _forward(self, x):
         x_a, x_b = tf.split(x, 2, axis=-1)
