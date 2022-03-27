@@ -24,6 +24,22 @@ class Dataset():
             self.intervals = [interval, interval]
             self.data_type = DataType.toydata
             self.input_output_shape = (2, 2)
+
+        elif dataset_name in ["activations"]:
+            train_split = 0.8
+            val_split = 0.1
+            filenames = [f"data/activations/{i}.npz" for i in range(11)]
+            activations = []
+            for filename in filenames:
+                with np.load(filename) as f:
+                    layer = f.files[-2]
+                    activations.append(f[layer])
+            activations = np.concatenate(activations)
+            train_data, self.batched_val_data, self.batched_test_data = shuffle_split(activations, train_split, val_split)
+            train_dataset = tf.data.Dataset.from_tensor_slices(train_data)
+            self.batched_train_data = train_dataset.batch(batch_size)
+            self.data_type = DataType.activations
+            self.input_output_shape = (100, 100)
             
         elif dataset_name in ["power", "gas", "miniboone", "hepmass"]:
             self.batched_train_data, self.batched_val_data, self.batched_test_data, self.intervals = load_and_preprocess_uci(batch_size=batch_size, shuffle=True)

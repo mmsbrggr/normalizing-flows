@@ -12,3 +12,4 @@ class DataType(Enum):
     uci = 2
     mnist = 3
     celeb = 4
+    activations = 5
